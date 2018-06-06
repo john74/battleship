@@ -1,10 +1,10 @@
-from collections import defaultdict
+from random import randint
 
 
 class Player:
     def __init__(self):
         self.name = ''
-        self.coords = defaultdict(list)
+        self.coords = {}
 
 P1 = Player()
 P2 = Player()
@@ -18,4 +18,7 @@ for idx, player in enumerate([P1, P2]):
                 "Player {}: Set coordinates for {}/{} for the ship with length {}"
                 .format(player.name, each_point + 1, ship_length, ship_length)
             )
-            player.coords[ship_length].append(coords)
+            player.coords[coords] = ship_length
+ 
+first_player = randint(1, 2)
+print("Player {} starts first".format(first_player))
