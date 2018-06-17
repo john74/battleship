@@ -5,6 +5,7 @@ class Player:
     def __init__(self):
         self.name = ''
         self.coords = defaultdict(list)
+        self.stricken = []
 
     def strike(self, enemy):
         print("{} select a point to strike!!".format(self.name))
@@ -14,6 +15,28 @@ class Player:
             del enemy.coords[player_strike]
         else:
             print("You missed")
+
+        self.stricken.append(player_strike)
+        self.print_board()
+
+    def print_board(self):
+        board = ""
+        for row in "0ABCDEFGH":
+            for column in "012345678":
+                if row + column == "00":
+                    board += " "
+                    continue
+                if column == "0":
+                    board += row
+                if row == "0":
+                    board += column
+
+                if row + column in self.stricken:
+                    board += "X"
+                else:
+                    board += " "
+            board += "\n"
+        print("{}'s: board\n {}".format(self.name, board))
 
 
 P1 = Player()
