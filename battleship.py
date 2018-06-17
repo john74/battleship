@@ -6,6 +6,15 @@ class Player:
         self.name = ''
         self.coords = defaultdict(list)
 
+    def strike(self, enemy):
+        print("{} select a point to strike!!".format(self.name))
+        player_strike = input()
+        if player_strike in enemy.coords.keys():
+            print("It is a hit!")
+            del enemy.coords[player_strike]
+        else:
+            print("You missed")
+
 
 P1 = Player()
 P2 = Player()
@@ -23,28 +32,10 @@ for idx, player in enumerate([P1, P2]):
             player.coords[coords].append(ship_length)
 
 
-while True:
+while P1.coords:
+    P1.strike(P2)
+    if not P2.coords:
+        break
+    P2.strike(P1)
 
-    print("{} select a point to strike!!".format(P1.name))
-    player_1_strike = input()
-    if player_1_strike in P2.coords.keys():
-        print("It is a hit!")
-        del P2.coords[player_1_strike]
-        if len(P2.coords) == 0:
-            print("{} is victorious.He destroyed all of {}'s ships"
-                  .format(P1.name, P2.name))
-            break
-    else:
-        print("You missed!")
-
-    print("{} select a point to strike!!".format(P2.name))
-    player_2_strike = input()
-    if player_2_strike in P1.coords.keys():
-        print("It is a hit!")
-        del P1.coords[player_2_strike]
-        if len(P1.coords) == 0:
-            print("{} is victorious.He destroyed all of {}'s ships"
-                  .format(P2.name, P1.name))
-            break
-    else:
-        print("You missed!")
+print("{} is victorious".format(P1.name if P1.coords else P2.name))
