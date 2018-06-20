@@ -5,18 +5,22 @@ class Player:
     def __init__(self):
         self.name = ''
         self.coords = defaultdict(list)
-        self.stricken = []
+        self.successful_strike = []
+        self.chosen_strike = []
+        self.attempts = 0
 
     def strike(self, enemy):
         print("{} select a point to strike!!".format(self.name))
-        player_strike = input()
+        player_strike = input().upper()
         if player_strike in enemy.coords.keys():
             print("It is a hit!")
+            self.successful_strike.append(player_strike)
             del enemy.coords[player_strike]
         else:
             print("You missed")
 
-        self.stricken.append(player_strike)
+        self.attempts += 1
+        self.chosen_strike.append(player_strike)
         self.print_board()
 
     def print_board(self):
@@ -28,13 +32,15 @@ class Player:
                     continue
                 if column == "0":
                     board += row
+                    continue
                 if row == "0":
-                    board += column
+                    board += " " + column
+                    continue
 
-                if row + column in self.stricken:
-                    board += "X"
+                if row + column in self.chosen_strike:
+                    board += " X"
                 else:
-                    board += " "
+                    board += "  "
             board += "\n"
         print("{}'s: board\n {}".format(self.name, board))
 
@@ -42,16 +48,16 @@ class Player:
 P1 = Player()
 P2 = Player()
 
+total_ships = int(input("Enter the total number of ships: "))
 
 for idx, player in enumerate([P1, P2]):
     player.name = input("Player {} set your name: ".format(idx + 1))
-    for ship_length in range(1, 5):
+    for ship_length in range(1, total_ships):
         for each_point in range(ship_length):
-            coords = input(
-                "Player {}: Set coordinates for {}/{} for the ship with length"
-                " {}: "
-                .format(player.name, each_point + 1, ship_length, ship_length)
-            )
+            print("{} set coordinates for {}/{} for the ship with length {}"
+                  .format(player.name, each_point + 1,
+                          ship_length, ship_length))
+            coords = input().upper()
             player.coords[coords].append(ship_length)
 
 
