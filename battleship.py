@@ -5,6 +5,7 @@ class Player:
     def __init__(self):
         self.name = ''
         self.coords = defaultdict(list)
+        self.ship_positions = defaultdict(list)
         self.successful_strike = []
         self.chosen_strike = []
         self.attempts = 0
@@ -48,17 +49,17 @@ class Player:
 P1 = Player()
 P2 = Player()
 
-total_ships = int(input("Enter the total number of ships: "))
+""" {"type":[size, amount]} """
+fleet = {"Carrier": [5, 1], "Battleship": [4, 1], "Cruiser": [3, 1],
+         "Submarine": [1, 2], "Destroyer": [2, 2]}
 
 for idx, player in enumerate([P1, P2]):
     player.name = input("Player {} set your name: ".format(idx + 1))
-    for ship_length in range(1, total_ships):
-        for each_point in range(ship_length):
-            print("{} set coordinates for {}/{} for the ship with length {}"
-                  .format(player.name, each_point + 1,
-                          ship_length, ship_length))
-            coords = input().upper()
-            player.coords[coords].append(ship_length)
+    for ship_number in range(1, 8):  # 7 ships for each player
+        for key, value in fleet.items():
+            for time in value:
+                print("{} set coordinates for the {}"
+                      .format(P1.name, fleet[value]))
 
 
 while P1.coords:
