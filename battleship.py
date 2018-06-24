@@ -42,7 +42,7 @@ class Player:
                 else:
                     board += "  "
             board += "\n"
-        print("{}'s: board\n {}".format(self.name, board))
+        print("{}'s: board\n{}".format(self.name, board))
 
 
 P1 = Player()
