@@ -1,17 +1,19 @@
 from collections import defaultdict
+import random
 
 
 class Player:
     def __init__(self):
         self.name = ''
         self.coords = defaultdict(list)
-        self.ship_positions = defaultdict(list)
+        #self.ship_positions = defaultdict(list)
         self.successful_strike = []
         self.chosen_strike = []
-        self.attempts = 0
+        #self.attempts = 0
+        self.setup()
 
     def strike(self, enemy):
-        print("{} select a point to strike!!".format(self.name))
+        print("{} select a point to strike!!".format(self))
         player_strike = input().upper()
         if player_strike in enemy.coords.keys():
             print("It is a hit!")
@@ -20,7 +22,7 @@ class Player:
         else:
             print("You missed")
 
-        self.attempts += 1
+        # self.attempts += 1
         self.chosen_strike.append(player_strike)
         self.print_board()
 
@@ -45,27 +47,41 @@ class Player:
             board += "\n"
         print("{}'s: board\n{}".format(self.name, board))
 
+    def setup(self):
+        set_coords_msg = (
+            "set coordinates for {}/{} for the ship with length {}"
+        )
+        self.name = input("Player set your name: ")
+        for ship_length in range(1, 2):
+            for each_point in range(ship_length):
+                print(set_coords_msg.format(
+                    self.name, each_point + 1, ship_length, ship_length
+                ))
+                coords = input().upper()
+                self.coords[coords].append(ship_length)
 
-P1 = Player()
-P2 = Player()
-
-""" {"type":[size, amount]} """
-fleet = {"Carrier": [5, 1], "Battleship": [4, 1], "Cruiser": [3, 1],
-         "Submarine": [1, 2], "Destroyer": [2, 2]}
-
-for idx, player in enumerate([P1, P2]):
-    player.name = input("Player {} set your name: ".format(idx + 1))
-    for ship_number in range(1, 8):  # 7 ships for each player
-        for key, value in fleet.items():
-            for time in value:
-                print("{} set coordinates for the {}"
-                      .format(P1.name, fleet[value]))
+    def __str__(self):
+        return self.name.capitalize()
 
 
-while P1.coords:
-    P1.strike(P2)
-    if not P2.coords:
-        break
-    P2.strike(P1)
+def main():
+    players = [Player(), Player()]
+    first_player, second_player = random.sample(players, 2)
+    print("{} starts first.".format(first_player))
 
-print("{} is victorious".format(P1.name if P1.coords else P2.name))
+    while first_player.coords:
+        first_player.strike(second_player)
+        if not second_player.coords:
+            break
+        second_player.strike(first_player)
+
+    print("{} is victorious".format(players[0] if players[0].coords
+                                    else players[1]))
+
+
+if __name__ == "__main__":
+    main()
+
+# TODO:
+# 1. print both boards at the same time
+# 2. fix attempts
