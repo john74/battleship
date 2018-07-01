@@ -1,5 +1,6 @@
 from collections import defaultdict
 import random
+TOTAL_SHIPS = 2  # TODO:to be removed
 
 
 class Player:
@@ -48,14 +49,15 @@ class Player:
         print("{}'s: board\n{}".format(self.name, board))
 
     def setup(self):
+
         set_coords_msg = (
             "set coordinates for {}/{} for the ship with length {}"
         )
         self.name = input("Player set your name: ")
-        for ship_length in range(1, 2):
+        for ship_length in range(1, TOTAL_SHIPS + 1):
             for each_point in range(ship_length):
                 print(set_coords_msg.format(
-                    self.name, each_point + 1, ship_length, ship_length
+                     each_point + 1, ship_length, ship_length
                 ))
                 coords = input().upper()
                 self.coords[coords].append(ship_length)
