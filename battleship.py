@@ -13,9 +13,24 @@ class Player:
         #self.attempts = 0
         self.setup()
 
+    @staticmethod
+    def validate_point(point):
+        rows = "ABCDEFGH"
+        columns = "12345678"
+        if len(point) != 2:
+            raise Exception("Invalid point")
+        if point[0] not in rows or point[1] not in columns:
+            raise Exception("Point out of bounds")
+
     def strike(self, enemy):
         print("{} select a point to strike!!".format(self))
         player_strike = input().upper()
+        try:
+            self.validate_point(player_strike)
+        except Exception as error:
+            print(error)
+            return self.strike(enemy)
+
         if player_strike in enemy.coords.keys():
             print("It is a hit!")
             self.successful_strike.append(player_strike)
@@ -59,7 +74,14 @@ class Player:
                 print(set_coords_msg.format(
                      each_point + 1, ship_length, ship_length
                 ))
-                coords = input().upper()
+                while True:
+                    coords = input().upper()
+                    try:
+                        self.validate_point(coords)
+                        break
+                    except Exception as error:
+                        print(error)
+
                 self.coords[coords].append(ship_length)
 
     def __str__(self):
