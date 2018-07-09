@@ -13,17 +13,18 @@ class Player:
         #self.attempts = 0
         self.setup()
 
-    @staticmethod
-    def validate_point(point):
+    def validate_point(self, point, check_duplicate=False):
         rows = "ABCDEFGH"
         columns = "12345678"
         if len(point) != 2:
             raise Exception("Invalid point")
         if point[0] not in rows or point[1] not in columns:
             raise Exception("Point out of bounds")
+        if check_duplicate:
+            if point in self.coords.keys():
+                raise Exception("Point already set")
 
     def strike(self, enemy):
-        print("{} select a point to strike!!".format(self))
         player_strike = input().upper()
         try:
             self.validate_point(player_strike)
@@ -77,7 +78,7 @@ class Player:
                 while True:
                     coords = input().upper()
                     try:
-                        self.validate_point(coords)
+                        self.validate_point(coords, True)
                         break
                     except Exception as error:
                         print(error)
@@ -91,16 +92,17 @@ class Player:
 def main():
     players = [Player(), Player()]
     first_player, second_player = random.sample(players, 2)
-    print("{} starts first.".format(first_player))
 
     while first_player.coords:
+        print("It's {}'s turn".format(first_player))
         first_player.strike(second_player)
         if not second_player.coords:
             break
+        print("It's {}'s turn".format(second_player))
         second_player.strike(first_player)
 
-    print("{} is victorious".format(players[0] if players[0].coords
-                                    else players[1]))
+    print("{} is victorious".format(first_player if first_player.coords
+                                    else second_player))
 
 
 if __name__ == "__main__":
