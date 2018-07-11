@@ -65,25 +65,48 @@ class Player:
         print("{}'s: board\n{}".format(self.name, board))
 
     def setup(self):
-
-        set_coords_msg = (
-            "set coordinates for {}/{} for the ship with length {}"
-        )
+        #  (amount, ship_length: "ship")
+        fleet = {(1, 5): "Aircraft Carrier", (1, 4): "Battleship",
+                 (1, 3): "Cruiser", (2, 2): "Destroyer", (2, 1): "Submarine"}
+        # single_block_msg = (
+        #     "set the coordinates for your {}"
+        # )
         self.name = input("Player set your name: ")
-        for ship_length in range(1, TOTAL_SHIPS + 1):
-            for each_point in range(ship_length):
-                print(set_coords_msg.format(
-                     each_point + 1, ship_length, ship_length
-                ))
-                while True:
+        for ship_length, ship_type in fleet.items():
+            while True:
+                if ship_length[1] > 1:
+                    print("{} occupies {} blocks.Set the starting point: "
+                          .format(ship_type, ship_length[1]))
                     coords = input().upper()
                     try:
-                        self.validate_point(coords, True)
-                        break
+                        self.validate_point(coords, check_duplicate=True)
+                        # TODO: impement validation to check
+                        # if there is enough space to fit the ship_length
                     except Exception as error:
                         print(error)
+                        continue
+                    print("Set the orientation.(V)ertically/(H)orizontally")
+                    orientation = input().upper()
+                    if orientation[0] == "H":
+                        for number_coord in range(int(coords[1]) + 1, ship_length[1]):
+                            self.coords[coords[0]+str(number_coord)].append(ship_type)
+                            # TODO:else clause in case V was given
 
-                self.coords[coords].append(ship_length)
+
+        # for ship_length in range(1, TOTAL_SHIPS + 1):
+        #     for each_point in range(ship_length):
+        #         print(set_coords_msg.format(
+        #              each_point + 1, ship_length, ship_length
+        #         ))
+        #         while True:
+        #             coords = input().upper()
+        #             try:
+        #                 self.validate_point(coords, True)
+        #                 break
+        #             except Exception as error:
+        #                 print(error)
+
+                #self.coords[coords].append(ship_length)
 
     def __str__(self):
         return self.name.capitalize()
