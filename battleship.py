@@ -1,5 +1,6 @@
 from collections import defaultdict
 import random
+from validation import validate_point
 TOTAL_SHIPS = 2  # TODO:to be removed
 
 
@@ -7,27 +8,14 @@ class Player:
     def __init__(self):
         self.name = ''
         self.coords = defaultdict(list)
-        #self.ship_positions = defaultdict(list)
         self.successful_strike = []
         self.chosen_strike = []
-        #self.attempts = 0
         self.setup()
-
-    def validate_point(self, point, check_duplicate=False):
-        rows = "ABCDEFGH"
-        columns = "12345678"
-        if len(point) != 2:
-            raise Exception("Invalid point")
-        if point[0] not in rows or point[1] not in columns:
-            raise Exception("Point out of bounds")
-        if check_duplicate:
-            if point in self.coords.keys():
-                raise Exception("Point already set")
 
     def strike(self, enemy):
         player_strike = input().upper()
         try:
-            self.validate_point(player_strike)
+            validate_point(player_strike)
         except Exception as error:
             print(error)
             return self.strike(enemy)
@@ -39,7 +27,6 @@ class Player:
         else:
             print("You missed")
 
-        # self.attempts += 1
         self.chosen_strike.append(player_strike)
         self.print_board()
 
@@ -79,7 +66,8 @@ class Player:
                           .format(ship_type, ship_length[1]))
                     coords = input().upper()
                     try:
-                        self.validate_point(coords, check_duplicate=True)
+                        validate_point(coords, self.coords,
+                                       check_duplicate=True)
                         # TODO: impement validation to check
                         # if there is enough space to fit the ship_length
                     except Exception as error:
