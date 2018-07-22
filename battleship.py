@@ -55,15 +55,13 @@ class Player:
         #  (amount, ship_length: "ship")
         fleet = {(1, 5): "Aircraft Carrier", (1, 4): "Battleship",
                  (1, 3): "Cruiser", (2, 2): "Destroyer", (2, 1): "Submarine"}
-        # single_block_msg = (
-        #     "set the coordinates for your {}"
-        # )
+
         self.name = input("Player set your name: ")
         for ship_length, ship_type in fleet.items():
             while True:
                 if ship_length[1] > 1:
-                    print("{} occupies {} blocks.Set the starting point: "
-                          .format(ship_type, ship_length[1]))
+                    print("Set the starting point for your {}: "
+                          .format(ship_type))
                     coords = input().upper()
                     try:
                         validate_point(coords, self.coords,
@@ -80,21 +78,6 @@ class Player:
                             self.coords[coords[0]+str(number_coord)].append(ship_type)
                             # TODO:else clause in case V was given
 
-
-        # for ship_length in range(1, TOTAL_SHIPS + 1):
-        #     for each_point in range(ship_length):
-        #         print(set_coords_msg.format(
-        #              each_point + 1, ship_length, ship_length
-        #         ))
-        #         while True:
-        #             coords = input().upper()
-        #             try:
-        #                 self.validate_point(coords, True)
-        #                 break
-        #             except Exception as error:
-        #                 print(error)
-
-                #self.coords[coords].append(ship_length)
 
     def __str__(self):
         return self.name.capitalize()
