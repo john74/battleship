@@ -1,6 +1,7 @@
 from collections import defaultdict
 import random
 from validation import validate_point
+from alignment import align_vertically, align_horizontally
 TOTAL_SHIPS = 2  # TODO:to be removed
 
 
@@ -59,25 +60,41 @@ class Player:
         self.name = input("Player set your name: ")
         for ship_length, ship_type in fleet.items():
             while True:
-                if ship_length[1] > 1:
-                    print("Set the starting point for your {}: "
-                          .format(ship_type))
-                    coords = input().upper()
-                    try:
-                        validate_point(coords, self.coords,
-                                       check_duplicate=True)
-                        # TODO: impement validation to check
-                        # if there is enough space to fit the ship_length
-                    except Exception as error:
-                        print(error)
-                        continue
-                    print("Set the orientation.(V)ertically/(H)orizontally")
-                    orientation = input().upper()
-                    if orientation[0] == "H":
-                        for number_coord in range(int(coords[1]) + 1, ship_length[1]):
-                            self.coords[coords[0]+str(number_coord)].append(ship_type)
-                            # TODO:else clause in case V was given
+                print("Set the starting point for your {}: "
+                      .format(ship_type))
+                coords = input().upper()
+                try:
+                    validate_point(coords, self.coords,
+                                   check_duplicate=True)
+                    # TODO: impement validation to check
+                    # if there is enough space to fit the ship_length
+                except Exception as error:
+                    print(error)
+                    continue
 
+                if ship_length[1] <= 1:
+                    self.coords[coords].append(ship_type)
+                    break
+
+                print("Set the orientation.(V)ertically/(H)orizontally")
+                orientation = input().upper()
+
+                if orientation[0] == "V":
+                    letter_index = "ABCDEFGH".index(coords[0])
+                    self.coords.update(align_vertically(letter_index,
+                                                        coords[1],
+                                                        ship_length[1],
+                                                        self.coords,
+                                                        ship_type))
+                    break
+                else:
+                    number_index = "12345678".index(coords[1])
+                    self.coords.update(align_horizontally(number_index,
+                                                          coords[0],
+                                                          ship_length[1],
+                                                          self.coords,
+                                                          ship_type))
+                    break
 
     def __str__(self):
         return self.name.capitalize()
@@ -105,3 +122,5 @@ if __name__ == "__main__":
 # TODO:
 # 1. print both boards at the same time
 # 2. fix attempts
+# 3. check if a ship already occupies some blocks and so
+# another ship can't be placed
