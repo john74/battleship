@@ -2,7 +2,6 @@ from collections import defaultdict
 import random
 from validation import validate_point
 from alignment import align_vertically, align_horizontally
-TOTAL_SHIPS = 2  # TODO:to be removed
 
 
 class Player:
@@ -53,6 +52,7 @@ class Player:
         print("{}'s: board\n{}".format(self.name, board))
 
     def setup(self):
+        input_counter = 0
         #  (amount, ship_length: "ship")
         fleet = {(1, 5): "Aircraft Carrier", (1, 4): "Battleship",
                  (1, 3): "Cruiser", (2, 2): "Destroyer", (2, 1): "Submarine"}
@@ -72,6 +72,8 @@ class Player:
                     print(error)
                     continue
 
+                input_counter += 1
+
                 if ship_length[1] <= 1:
                     self.coords[coords].append(ship_type)
                     break
@@ -86,7 +88,7 @@ class Player:
                                                         ship_length[1],
                                                         self.coords,
                                                         ship_type))
-                    break
+
                 else:
                     number_index = "12345678".index(coords[1])
                     self.coords.update(align_horizontally(number_index,
@@ -94,7 +96,11 @@ class Player:
                                                           ship_length[1],
                                                           self.coords,
                                                           ship_type))
-                    break
+                # if input_counter < ship_length[0]:
+                #     continue
+                # else:
+                #     break
+        print(self.coords)  # TODO: TO BE REMOVED
 
     def __str__(self):
         return self.name.capitalize()
@@ -124,3 +130,5 @@ if __name__ == "__main__":
 # 2. fix attempts
 # 3. check if a ship already occupies some blocks and so
 # another ship can't be placed
+# 4. if a ship type has more than one ships inside the fleet
+# user must be asked again to enter coords
