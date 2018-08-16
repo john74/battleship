@@ -8,3 +8,12 @@ def validate_point(point, coords=None, check_duplicate=False):
     if check_duplicate:
         if point in coords.keys():
             raise Exception("Point already set")
+
+def check_ship_type_amount(input_counter, ship_amount):
+    if input_counter < ship_amount:
+        return True
+
+# def not_enough_space(coords):
+#     pass
+
+

@@ -1,6 +1,7 @@
 from collections import defaultdict
 import random
-from validation import validate_point
+from board import print_board
+from validation import validate_point, check_ship_type_amount
 from alignment import align_vertically, align_horizontally
 
 
@@ -28,37 +29,17 @@ class Player:
             print("You missed")
 
         self.chosen_strike.append(player_strike)
-        self.print_board()
+        print_board(self.name, self.chosen_strike)
 
-    def print_board(self):
-        board = ""
-        for row in "0ABCDEFGH":
-            for column in "012345678":
-                if row + column == "00":
-                    board += " "
-                    continue
-                if column == "0":
-                    board += row
-                    continue
-                if row == "0":
-                    board += " " + column
-                    continue
-
-                if row + column in self.chosen_strike:
-                    board += " X"
-                else:
-                    board += "  "
-            board += "\n"
-        print("{}'s: board\n{}".format(self.name, board))
 
     def setup(self):
-        input_counter = 0
-        #  (amount, ship_length: "ship")
         fleet = {(1, 5): "Aircraft Carrier", (1, 4): "Battleship",
                  (1, 3): "Cruiser", (2, 2): "Destroyer", (2, 1): "Submarine"}
 
         self.name = input("Player set your name: ")
-        for ship_length, ship_type in fleet.items():
+        for ship_parameters, ship_type in fleet.items():
+            ship_amount, ship_length = ship_parameters
+            input_counter = 1
             while True:
                 print("Set the starting point for your {}: "
                       .format(ship_type))
@@ -66,26 +47,26 @@ class Player:
                 try:
                     validate_point(coords, self.coords,
                                    check_duplicate=True)
-                    # TODO: impement validation to check
-                    # if there is enough space to fit the ship_length
                 except Exception as error:
                     print(error)
                     continue
 
-                input_counter += 1
-
-                if ship_length[1] <= 1:
+                if ship_length == 1:
                     self.coords[coords].append(ship_type)
+                    if check_ship_type_amount(input_counter, ship_amount):
+                        input_counter += 1
+                        continue
                     break
 
                 print("Set the orientation.(V)ertically/(H)orizontally")
-                orientation = input().upper()
+                alignment = input().upper()
 
-                if orientation[0] == "V":
+                if alignment[0] == "V":
                     letter_index = "ABCDEFGH".index(coords[0])
+
                     self.coords.update(align_vertically(letter_index,
                                                         coords[1],
-                                                        ship_length[1],
+                                                        ship_length,
                                                         self.coords,
                                                         ship_type))
 
@@ -93,13 +74,16 @@ class Player:
                     number_index = "12345678".index(coords[1])
                     self.coords.update(align_horizontally(number_index,
                                                           coords[0],
-                                                          ship_length[1],
+                                                          ship_length,
                                                           self.coords,
                                                           ship_type))
-                # if input_counter < ship_length[0]:
-                #     continue
-                # else:
-                #     break
+
+                if check_ship_type_amount(input_counter, ship_amount):
+                    input_counter += 1
+                    continue
+                
+                break
+
         print(self.coords)  # TODO: TO BE REMOVED
 
     def __str__(self):
